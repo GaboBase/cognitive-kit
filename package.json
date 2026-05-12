@@ -1,6 +1,6 @@
 {
   "name": "cognitive-kit",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Pluggable cognitive layer — port of GCS v15.3 as an embeddable MCP cognitive kit. Provides reasoning, research, planning, creativity, reflection, security, knowledge, analysis, agency orchestration, and adaptive pipelines via MCP protocol.",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,12 +19,13 @@
     }
   },
   "bin": {
-    "cognitive-kit": "./dist/cli.js"
+    "cognitive-kit": "./cli.mjs"
   },
   "files": [
     "dist",
     "types",
     "docs",
+    "cli.mjs",
     "mcp.json",
     "README.md",
     "LICENSE"
@@ -44,13 +45,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/GaboBase/TODO-Cognitive.git",
-    "directory": "packages/cognitive-kit"
+    "url": "https://github.com/GaboBase/cognitive-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/GaboBase/TODO-Cognitive/issues"
+    "url": "https://github.com/GaboBase/cognitive-kit/issues"
   },
-  "homepage": "https://github.com/GaboBase/TODO-Cognitive/tree/main/packages/cognitive-kit",
+  "homepage": "https://github.com/GaboBase/cognitive-kit",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -77,8 +77,12 @@
   "dependencies": {
     "sql.js": "^1.11.0"
   },
+  "optionalDependencies": {
+    "pg": "^8.14.0"
+  },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "@types/pg": "^8.20.0",
     "typescript": "^5.8.2"
   }
 }
