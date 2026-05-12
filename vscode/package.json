@@ -1,0 +1,91 @@
+{
+  "name": "cognitive-kit-vscode",
+  "displayName": "GCS Cognitive Kit",
+  "description": "Pluggable cognitive layer for VS Code — 27 MCP tools for reasoning, research, planning, creativity, security, knowledge, analysis, and adaptive agency pipelines with Guardian Gate sovereignty",
+  "version": "1.0.0-alpha.1",
+  "publisher": "GaboBase",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "mcp",
+    "cognitive",
+    "ai",
+    "reasoning",
+    "agent",
+    "orchestration",
+    "ethics",
+    "security",
+    "knowledge"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cognitive-kit.start",
+        "title": "Cognitive Kit: Start MCP Server"
+      },
+      {
+        "command": "cognitive-kit.stop",
+        "title": "Cognitive Kit: Stop MCP Server"
+      },
+      {
+        "command": "cognitive-kit.status",
+        "title": "Cognitive Kit: Show Status"
+      },
+      {
+        "command": "cognitive-kit.analyzeSelection",
+        "title": "Cognitive Kit: Analyze Current Selection"
+      },
+      {
+        "command": "cognitive-kit.reflectOnWorkspace",
+        "title": "Cognitive Kit: Reflect on Workspace"
+      }
+    ],
+    "configuration": {
+      "title": "Cognitive Kit",
+      "properties": {
+        "cognitive-kit.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to cognitive-kit CLI (default: uses bundled package)"
+        },
+        "cognitive-kit.sovereignKey": {
+          "type": "string",
+          "default": "",
+          "description": "Sovereign key for identity verification"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc --watch -p tsconfig.json",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GaboBase/TODO-Cognitive.git",
+    "directory": "apps/vscode-kit"
+  },
+  "bugs": {
+    "url": "https://github.com/GaboBase/TODO-Cognitive/issues"
+  },
+  "homepage": "https://github.com/GaboBase/TODO-Cognitive/tree/main/apps/vscode-kit",
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "cognitive-kit": "1.0.0-alpha.1"
+  }
+}

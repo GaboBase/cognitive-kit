@@ -1,0 +1,50 @@
+{
+  "servers": {
+    "cognitive-kit": {
+      "name": "Cognitive Kit",
+      "description": "Pluggable cognitive layer — 31+ MCP tools for reasoning, research, planning, creativity, security, knowledge, analysis, agency orchestration, and adaptive pipelines",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["cognitive-kit"],
+      "env": {
+        "KIT_HOST_ID": "${workspaceFolderBasename}",
+        "KIT_HOST_NAME": "${workspaceFolderBasename}",
+        "KIT_SOVEREIGN_KEY": ""
+      },
+      "icon": "🧠",
+      "tools": [
+        "cognitive_reason",
+        "cognitive_research",
+        "cognitive_plan",
+        "cognitive_create",
+        "cognitive_reflect",
+        "security_gate",
+        "ethics_audit",
+        "integrity_ledger",
+        "threat_mapper",
+        "red_team",
+        "blast_radius",
+        "guardian_status",
+        "guardian_freeze",
+        "guardian_unfreeze",
+        "memory_vam",
+        "knowledge_evolve",
+        "context_synth",
+        "code_archaeologist",
+        "sentiment_adapter",
+        "consensus_engine",
+        "execution_flow",
+        "swarm_orchestrator",
+        "meta_orchestrator",
+        "subagent_protocol",
+        "agency_execute",
+        "skill_forge",
+        "skill_list_forged",
+        "federation_status",
+        "federation_connect",
+        "federation_execute",
+        "federation_disconnect"
+      ]
+    }
+  }
+}

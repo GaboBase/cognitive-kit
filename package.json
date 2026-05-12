@@ -1,0 +1,84 @@
+{
+  "name": "cognitive-kit",
+  "version": "1.0.0-alpha.3",
+  "description": "Pluggable cognitive layer — port of GCS v15.3 as an embeddable MCP cognitive kit. Provides reasoning, research, planning, creativity, reflection, security, knowledge, analysis, agency orchestration, and adaptive pipelines via MCP protocol.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "sql.js": [
+        "./types/sql.js.d.ts"
+      ]
+    }
+  },
+  "bin": {
+    "cognitive-kit": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "types",
+    "docs",
+    "mcp.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc --watch -p tsconfig.json",
+    "test": "node tests/mcp-test-all.mjs && node tests/guardian-test.mjs && node tests/forge-test.mjs && node tests/federation-test.mjs",
+    "start": "node dist/cli.js",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GaboBase/TODO-Cognitive.git",
+    "directory": "packages/cognitive-kit"
+  },
+  "bugs": {
+    "url": "https://github.com/GaboBase/TODO-Cognitive/issues"
+  },
+  "homepage": "https://github.com/GaboBase/TODO-Cognitive/tree/main/packages/cognitive-kit",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "cognitive",
+    "ai",
+    "agent",
+    "orchestration",
+    "reasoning",
+    "research",
+    "planning",
+    "sentiment",
+    "security",
+    "ethics",
+    "knowledge-graph",
+    "memory",
+    "swarm",
+    "agency",
+    "skill-forging",
+    "guardian",
+    "sovereignty"
+  ],
+  "author": "GaboBase (Leirbag) <agabriel.js@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "sql.js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.2"
+  }
+}

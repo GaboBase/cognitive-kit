@@ -1,0 +1,71 @@
+name: Cognitive Kit CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/cognitive-kit/**'
+      - '.github/workflows/cognitive-kit.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/cognitive-kit/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/cognitive-kit
+
+    strategy:
+      matrix:
+        node-version: [20, 22, 24]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+        working-directory: .
+
+      - run: npm run build
+
+      - name: Run integration tests
+        run: |
+          node tests/mcp-test-all.mjs
+          node tests/guardian-test.mjs
+          node tests/forge-test.mjs
+          node tests/federation-test.mjs
+
+  publish:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/cognitive-kit
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - run: npm ci
+        working-directory: .
+
+      - run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access restricted
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
