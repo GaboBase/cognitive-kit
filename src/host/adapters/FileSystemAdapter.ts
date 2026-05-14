@@ -56,8 +56,11 @@ export class FileSystemAdapter implements HostAdapter {
   }
 
   private resolvePath(userPath: string): string {
-    const sanitized = userPath.replace(/\.\.(\/|\\)/g, '');
-    return resolve(this.rootPath, sanitized);
+    const resolved = resolve(this.rootPath, userPath);
+    if (!resolved.startsWith(this.rootPath)) {
+      throw new Error(`Path traversal detected: ${userPath} escapes root ${this.rootPath}`);
+    }
+    return resolved;
   }
 
   private createReadTool(): ToolDefinition {

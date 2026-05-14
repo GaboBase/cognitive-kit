@@ -8,8 +8,10 @@ export interface GuardianConfig {
   enableFirewall?: boolean;
   enableSovereignty?: boolean;
   enableStateGuardian?: boolean;
+  enableRateLimit?: boolean;
   requiredSovereignty?: number;
   riskThreshold?: 'low' | 'medium' | 'high';
+  maxCallsPerMinute?: number;
 }
 
 export class GuardianGate {
@@ -18,6 +20,7 @@ export class GuardianGate {
   private stateGuardian_: StateGuardian;
   private toolRegistry: ToolRegistry;
   private config: Required<GuardianConfig>;
+  private rateLimitWindow: Array<{ toolId: string; timestamp: number }> = [];
 
   constructor(toolRegistry: ToolRegistry, sovereignty: SovereigntyManager, config?: GuardianConfig) {
     this.toolRegistry = toolRegistry;
@@ -28,8 +31,10 @@ export class GuardianGate {
       enableFirewall: config?.enableFirewall ?? true,
       enableSovereignty: config?.enableSovereignty ?? true,
       enableStateGuardian: config?.enableStateGuardian ?? true,
+      enableRateLimit: config?.enableRateLimit ?? true,
       requiredSovereignty: config?.requiredSovereignty ?? 0.1,
       riskThreshold: config?.riskThreshold ?? 'medium',
+      maxCallsPerMinute: config?.maxCallsPerMinute ?? 300,
     };
   }
 
@@ -42,7 +47,21 @@ export class GuardianGate {
 
     const op = this.sovManager.createOperation(context.identity, `execute:${toolId}`, toolId);
 
-    // 1. State check
+    // 1. Rate limit check
+    if (this.config.enableRateLimit) {
+      const now = Date.now();
+      this.rateLimitWindow = this.rateLimitWindow.filter(r => now - r.timestamp < 60000);
+      if (this.rateLimitWindow.length >= this.config.maxCallsPerMinute) {
+        this.sovManager.rejectOperation(op.operationId, `Rate limit exceeded: ${this.config.maxCallsPerMinute}/min`);
+        return {
+          success: false, data: null, error: `GUARDIAN: Rate limit exceeded (${this.config.maxCallsPerMinute}/minute)`,
+          metadata: { guardian: 'rate-limited', operationId: op.operationId },
+        };
+      }
+      this.rateLimitWindow.push({ toolId, timestamp: now });
+    }
+
+    // 2. State check
     if (this.config.enableStateGuardian && this.stateGuardian_.isFrozen) {
       this.sovManager.rejectOperation(op.operationId, `System frozen: ${this.stateGuardian_.freezeMessage}`);
       return {
@@ -128,4 +147,13 @@ export class GuardianGate {
   get sovereigntyManager(): SovereigntyManager { return this.sovManager; }
   get firewall(): SynapticFirewall { return this.firewall_; }
   get stateGuardian(): StateGuardian { return this.stateGuardian_; }
+  get rateLimitStats(): { maxPerMinute: number; currentWindow: number; remaining: number } {
+    const now = Date.now();
+    this.rateLimitWindow = this.rateLimitWindow.filter(r => now - r.timestamp < 60000);
+    return {
+      maxPerMinute: this.config.maxCallsPerMinute,
+      currentWindow: this.rateLimitWindow.length,
+      remaining: Math.max(0, this.config.maxCallsPerMinute - this.rateLimitWindow.length),
+    };
+  }
 }

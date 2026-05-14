@@ -114,8 +114,12 @@ export class PostgresAdapter implements HostAdapter {
         if (!this.available) return { success: false, data: null, error: 'PostgreSQL not connected' };
         const sql = String(params.sql || '');
         if (!sql) return { success: false, data: null, error: 'SQL query is required' };
-        if (!/^\s*SELECT/i.test(sql.trim())) {
+        const trimmed = sql.trim().replace(/\/\*.*?\*\//gs, '').trim();
+        if (!/^SELECT\b/i.test(trimmed)) {
           return { success: false, data: null, error: 'Only SELECT queries are allowed via pg_query' };
+        }
+        if (/;\s*(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|EXECUTE)\b/i.test(trimmed)) {
+          return { success: false, data: null, error: 'Write operations are not allowed via pg_query' };
         }
         try {
           const result = await this.query(sql, Array.isArray(params.params) ? params.params : undefined);
